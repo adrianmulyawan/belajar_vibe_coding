@@ -1,8 +1,10 @@
 import { Elysia } from "elysia";
 import { db } from "./db";
 import { users } from "./db/schema";
+import { userRoutes } from "./routes/user.route";
 
 const app = new Elysia()
+  .use(userRoutes)
   .get("/", () => ({
     message: "Hello World! Elysia backend is running with Bun.",
     tech_stack: ["Bun", "Elysia JS", "Drizzle ORM", "MySQL"]
