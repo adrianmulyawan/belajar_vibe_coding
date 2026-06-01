@@ -1,5 +1,5 @@
 import { Elysia } from "elysia";
-import { registerUser, loginUser } from "../controllers/user.controller";
+import { registerUser, loginUser, getProfile } from "../controllers/user.controller";
 
 export const userRoutes = new Elysia({ prefix: "/api/v1" })
   .post("/register", async (context) => {
@@ -9,6 +9,11 @@ export const userRoutes = new Elysia({ prefix: "/api/v1" })
   })
   .post("/login", async (context) => {
     const response = await loginUser({ body: context.body });
+    context.set.status = response.status;
+    return response;
+  })
+  .get("/user/profile", async (context) => {
+    const response = await getProfile({ headers: context.headers });
     context.set.status = response.status;
     return response;
   });

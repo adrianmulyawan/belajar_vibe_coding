@@ -16,3 +16,13 @@ export const createSession = async (userId: number, token: string) => {
   const [result] = await db.insert(sessions).values({ userId, token });
   return result;
 };
+
+export const getSessionByToken = async (token: string) => {
+  const result = await db.select().from(sessions).where(eq(sessions.token, token)).limit(1);
+  return result[0];
+};
+
+export const getUserById = async (id: number) => {
+  const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
+  return result[0];
+};

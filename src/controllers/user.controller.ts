@@ -1,4 +1,4 @@
-import { createUser, getUserByEmail, createSession } from "../models/user.model";
+import { createUser, getUserByEmail, createSession, getSessionByToken, getUserById } from "../models/user.model";
 
 export const registerUser = async ({ body }: { body: any }) => {
   try {
@@ -87,6 +87,42 @@ export const loginUser = async ({ body }: { body: any }) => {
       status: 200,
       message: "Success",
       token,
+    };
+  } catch (error: any) {
+    return {
+      status: 500,
+      message: "Failed",
+      error: error.message,
+    };
+  }
+};
+
+export const getProfile = async ({ headers }: { headers: any }) => {
+  try {
+    const authHeader = headers["authorization"];
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return { status: 400, message: "Failed", error: "Invalid credentials" };
+    }
+
+    const token = authHeader.slice(7);
+    const session = await getSessionByToken(token);
+    if (!session) {
+      return { status: 400, message: "Failed", error: "Invalid credentials" };
+    }
+
+    const user = await getUserById(session.userId);
+    if (!user) {
+      return { status: 400, message: "Failed", error: "Invalid credentials" };
+    }
+
+    return {
+      status: 200,
+      message: "Success",
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
     };
   } catch (error: any) {
     return {
